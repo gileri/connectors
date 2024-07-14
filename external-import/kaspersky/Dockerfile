@@ -10,7 +10,7 @@ WORKDIR /builder
 
 # Install OS dependencies.
 RUN apk update && \
-    apk --no-cache add build-base git libxml2-dev libxslt-dev && \
+    apk --no-cache add git build-base libxml2-dev libxslt-dev && \
     rm -rf /var/cache/apk/*
 
 # Setup the virtual environment.
