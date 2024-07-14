@@ -63,7 +63,8 @@ jobs:
       - image: cimg/base:stable-20.04
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run: sudo apt-get update -qq && sudo apt install curl gettext-base
       - run:
           working_directory: ~/opencti/internal-import-file/import-file-stix
@@ -477,7 +478,8 @@ jobs:
       - image: cimg/base:stable-20.04
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run: sudo apt-get update -qq && sudo apt install curl gettext-base
       - run:
           working_directory: ~/opencti/external-import/sekoia
@@ -873,7 +875,8 @@ jobs:
       - image: cimg/base:stable-20.04
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run: sudo apt-get update -qq && sudo apt install curl gettext-base
       - run:
           working_directory: ~/opencti/internal-import-file/import-file-stix
@@ -921,7 +924,8 @@ jobs:
       - image: cimg/base:stable-20.04
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run: sudo apt-get update -qq && sudo apt install curl gettext-base
       - run:
           working_directory: ~/opencti
@@ -1263,7 +1267,8 @@ jobs:
       - image: cimg/base:stable-20.04
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run: sudo apt-get update -qq && sudo apt install curl gettext-base
       - run:
           working_directory: ~/opencti
@@ -1605,7 +1610,8 @@ jobs:
       - image: cimg/base:stable-20.04
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run: sudo apt-get update -qq && sudo apt install curl gettext-base
       - run:
           working_directory: ~/opencti
