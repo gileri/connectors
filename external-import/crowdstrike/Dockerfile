@@ -1,19 +1,12 @@
 FROM python:3.11-alpine
+RUN apk add --no-cache libmagic libxslt libxslt-dev libxml2 libxml2-dev
+
 ENV CONNECTOR_TYPE=EXTERNAL_IMPORT
+ARG CONNECTOR_NAME=crowdstrike
 
-# Copy the connector
-COPY src /opt/opencti-connector-crowdstrike
+WORKDIR /opt/opencti-connector-${CONNECTOR_NAME}
+CMD ["python", "main.py"]
 
-# Install Python modules
-# hadolint ignore=DL3003
-RUN apk update && apk upgrade && \
-    apk --no-cache add git build-base libmagic libffi-dev libxslt libxslt-dev libxml2 libxml2-dev && \
-    cd /opt/opencti-connector-crowdstrike && \
-    pip install --no-cache-dir -r requirements.txt && \
-    apk del git build-base && \
-    rm -rf /var/cache/apk/*
-
-# Expose and entrypoint
-COPY entrypoint.sh /
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+COPY src/requirements.txt /opt/opencti-connector-${CONNECTOR_NAME}
+RUN pip3 install --no-cache-dir -r requirements.txt
+COPY src /opt/opencti-connector-${CONNECTOR_NAME}

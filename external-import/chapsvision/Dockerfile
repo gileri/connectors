@@ -1,17 +1,11 @@
 FROM python:3.11-alpine
+RUN apk add libmagic libxslt libxslt-dev libxml2 libxml2-dev
+
 ENV CONNECTOR_TYPE=EXTERNAL_IMPORT
+ARG CONNECTOR_NAME=chapsvision
 
-# Copy the connector
-COPY src /opt/opencti-connector-chapsvision
+COPY src /opt/opencti-connector-${CONNECTOR_NAME}
+WORKDIR /opt/opencti-connector-${CONNECTOR_NAME}
+CMD ["python", "chapsvision.py"]
 
-# Install Python modules
-# hadolint ignore=DL3003
-RUN apk --no-cache add git build-base libmagic libffi-dev && \
-    cd /opt/opencti-connector-chapsvision && \
-    pip3 install --no-cache-dir -r requirements.txt && \
-    apk del git build-base
-
-# Expose and entrypoint
-COPY entrypoint.sh /
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+RUN pip3 install --no-cache-dir -r requirements.txt

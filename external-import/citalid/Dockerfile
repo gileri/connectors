@@ -1,17 +1,12 @@
 FROM python:3.11-alpine
+RUN apk add --no-cache libmagic libxslt libxslt-dev libxml2 libxml2-dev
+
 ENV CONNECTOR_TYPE=EXTERNAL_IMPORT
+ARG CONNECTOR_NAME=citalid
 
-# Copy the connector
-COPY src /opt/opencti-connector-citalid
+WORKDIR /opt/opencti-connector-${CONNECTOR_NAME}
+CMD ["python", "citalid.py"]
 
-# Install Python modules
-# hadolint ignore=DL3003
-RUN apk --no-cache add git build-base libmagic libffi-dev && \
-    cd /opt/opencti-connector-citalid && \
-    pip3 install --no-cache-dir -r requirements.txt && \
-    apk del git build-base
-
-# Expose and entrypoint
-COPY entrypoint.sh /
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+COPY src/requirements.txt /opt/opencti-connector-${CONNECTOR_NAME}
+RUN pip3 install --no-cache-dir -r requirements.txt
+COPY src /opt/opencti-connector-${CONNECTOR_NAME}

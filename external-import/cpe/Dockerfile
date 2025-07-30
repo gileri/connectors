@@ -1,14 +1,12 @@
 FROM python:3.11-alpine
+RUN apk add --no-cache libmagic libxslt libxslt-dev libxml2 libxml2-dev
 
-# Copy the connector
-COPY src /opt/opencti-connector-cpe
+ENV CONNECTOR_TYPE=EXTERNAL_IMPORT
+ARG CONNECTOR_NAME=cpe
 
-# Install Python modules
-RUN apk --no-cache add git build-base libmagic libffi-dev libxml2-dev libxslt-dev
-COPY requirements.txt /tmp/requirements.txt
-RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+WORKDIR /opt/opencti-connector-${CONNECTOR_NAME}
+CMD ["python", "main.py"]
 
-# Expose and entrypoint
-COPY entrypoint.sh /
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+COPY src/requirements.txt /opt/opencti-connector-${CONNECTOR_NAME}
+RUN pip3 install --no-cache-dir -r requirements.txt
+COPY src /opt/opencti-connector-${CONNECTOR_NAME}
