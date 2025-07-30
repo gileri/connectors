@@ -1,19 +1,16 @@
 FROM python:3.11-alpine
+RUN apk add --no-cache libmagic libxslt libxslt-dev libxml2 libxml2-dev
+
 ENV CONNECTOR_TYPE=INTERNAL_EXPORT_FILE
+ARG CONNECTOR_NAME=export-report-pdf
 
-# Copy the worker
-COPY src /opt/opencti-connector-export-report-pdf
+WORKDIR /opt/opencti-connector-${CONNECTOR_NAME}
+CMD ["python", "export-report-pdf.py"]
 
-# Install Python modules
-# hadolint ignore=DL3003
-RUN apk --no-cache add git build-base libmagic libffi-dev zlib-dev tiff-dev jpeg-dev openjpeg-dev zlib-dev \
+RUN apk --no-cache add zlib-dev tiff-dev jpeg-dev openjpeg-dev zlib-dev \
     freetype-dev lcms2-dev libwebp-dev tcl-dev tk-dev harfbuzz-dev fribidi-dev libimagequant-dev \
-    libxcb-dev libpng-dev pango weasyprint && \
-    cd /opt/opencti-connector-export-report-pdf && \
-    pip3 install --no-cache-dir -r requirements.txt && \
-    apk del git build-base
+    libxcb-dev libpng-dev pango weasyprint
 
-# Expose and entrypoint
-COPY entrypoint.sh /
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+COPY src/requirements.txt /opt/opencti-connector-${CONNECTOR_NAME}
+RUN pip3 install --no-cache-dir -r requirements.txt
+COPY src /opt/opencti-connector-${CONNECTOR_NAME}
